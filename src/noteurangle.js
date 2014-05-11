@@ -1,7 +1,7 @@
 import angular from 'angular';
 import {Module} from 'diWrapper/module';
 
-import {NotesController} from './NotesController';
+import NotesController from './NotesController';
 
 var angularModule = angular.module('noteurangle', []).run(function () {
   console.log('noteurangle executing!');
