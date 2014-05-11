@@ -1,0 +1,23 @@
+{
+  "name": "noteurangle",
+  "version": "0.0.0",
+  "authors": [
+    "Enrique Tebari Barragan Corte <tebari@tebari.com>"
+  ],
+  "description": "A silly note taking app done in ES6 and Angular.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16",
+    "requirejs": "~2.1.11",
+    "traceur-runtime": "~0.0.41"
+  }
+}
