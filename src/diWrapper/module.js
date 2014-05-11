@@ -5,6 +5,7 @@ import {
   getAnnotation,
   getAnnotations
 } from './annotations';
+import angular from 'angular';
 
 function listDependencies (obj) {
   return getAnnotations(obj, Inject).map(
@@ -17,21 +18,25 @@ function listDependencies (obj) {
 function registerController(module, name, dependencies, Controller) {
   var scopeIndex = dependencies.indexOf('$scope');
   module.controller(name, dependencies.concat( (...deps) => {
-        var controller = new Controller(...deps);
-        var scope = (scopeIndex >= 0) ? deps[scopeIndex] : null;
+    var controller = new Controller(...deps);
+    var scope = (scopeIndex >= 0) ? deps[scopeIndex] : null;
 
-        for (var attrName in controller) {
-          var attr = controller[attrName];
-          var scopeAnnotation = getAnnotation(attr, Scope);
-          if (scope && scopeAnnotation) {
-            var scopeAttrName =
-              (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
+    for (var attrName in controller) {
+      var attr = controller[attrName];
+      var scopeAnnotation = getAnnotation(attr, Scope);
+      if (scope && scopeAnnotation) {
+        var scopeAttrName =
+          (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
 
-            scope[scopeAttrName] = () => {
-              return attr.apply(controller, arguments);
-            };
-          }
+        if (typeof attr === 'function') {
+          scope[scopeAttrName] = angular.bind(controller, attr);
+        } else {
+          scope[scopeAttrName] = attr;
         }
+      }
+    }
+
+    return controller;
   }));
 }
 
