@@ -7,7 +7,8 @@
 <body>
   <h1>Notes for all!</h1>
   <div ng-controller="NotesController">
-    <p>{{noteText}}</p>
+    <input type="text" ng-model="noteText">
+    <button ng-click="clear()">Clear</button>
   </div>
 
   <script data-main="main.js" src="lib/requirejs/require.js"></script>
