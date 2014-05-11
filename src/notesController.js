@@ -1,10 +1,19 @@
-import {Inject, Controller} from 'diWrapper/annotations';
+import {Inject, Controller, Scope} from 'diWrapper/annotations';
 
 @Controller('NotesController')
 @Inject('$scope')
-export function notesController($scope) {
-  $scope.noteText = 'Write a note there!';
-  $scope.clear = function () {
-    $scope.noteText = '';
-  };
+export class NotesController {
+  constructor($scope) {
+    this.$scope = $scope;
+    this.init();
+  }
+
+  init() {
+    this.$scope.noteText = 'Write a new note here!';
+  }
+
+  @Scope
+  clear() {
+    this.$scope.noteText = '';
+  }
 }
