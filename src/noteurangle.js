@@ -1,5 +1,5 @@
 import angular from 'angular';
-import {Module} from 'diWrapper/module';
+import {Module} from 'diWrap';
 
 import NotesController from './NotesController';
 

@@ -1,4 +1,4 @@
-import {Inject, Controller, Scope} from 'diWrapper/annotations';
+import {Inject, Controller, Scope} from 'diWrap';
 
 @Controller('NotesController')
 @Inject('$scope')

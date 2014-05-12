@@ -10,6 +10,11 @@ requirejs.config({
   paths: {
     angular: 'lib/angular/angular',
     'traceur-runtime': 'lib/traceur-runtime/traceur-runtime'
+  },
+  map: {
+    '*' : {
+      'diWrap': 'diWrapper/index'
+    }
   }
 });
 
