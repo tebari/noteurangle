@@ -2,6 +2,15 @@ class Inject {
   constructor(...dependencies) {
     this.dependencies = dependencies;
   }
+
+  static setAngularAnnotation(fn) {
+    var injectAnnotation = getAnnotation(fn, Inject);
+    if (!injectAnnotation || !injectAnnotation.dependencies) {
+      return;
+    }
+
+    fn.$inject = injectAnnotation.dependencies;
+  }
 }
 
 class Controller {

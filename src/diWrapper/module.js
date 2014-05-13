@@ -5,6 +5,7 @@ import {
   getAnnotation,
   getAnnotations
 } from './annotations';
+import {decorateInjector} from './injector';
 import angular from 'angular';
 
 function listDependencies (obj) {
@@ -28,6 +29,7 @@ function autowireControllerMethods(controllerInstance, scope) {
   }
 }
 
+@Inject('$delegate')
 function decorateControllerService($controller) {
   return function decoratedControllerService(constructor, locals) {
     var instance = $controller(constructor, locals);
@@ -40,24 +42,23 @@ function decorateControllerService($controller) {
   };
 }
 
-function decorateModuleServices(module) {
-  module.config(['$provide', function getProvide($provide) {
-    $provide.decorator('$controller', ['$delegate', decorateControllerService]);
-  }]);
+@Inject('$provide')
+function decorateModuleServices($provide) {
+  $provide.decorator('$controller', decorateControllerService);
 }
 
 export class Module {
   constructor(module) {
-    decorateModuleServices(module);
+    decorateInjector(module);
+    module.config(decorateModuleServices);
+
     this.module = module;
   }
 
   register (obj) {
     var ctrlAnotation = getAnnotation(obj, Controller);
-    var dependencies = listDependencies(obj);
 
     if (ctrlAnotation) {
-      obj.$inject = dependencies;
       this.module.controller(ctrlAnotation.controllerName, obj);
     }
   }
