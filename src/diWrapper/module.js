@@ -15,33 +15,44 @@ function listDependencies (obj) {
   );
 }
 
-function registerController(module, name, dependencies, Controller) {
-  var scopeIndex = dependencies.indexOf('$scope');
-  module.controller(name, dependencies.concat( (...deps) => {
-    var controller = new Controller(...deps);
-    var scope = (scopeIndex >= 0) ? deps[scopeIndex] : null;
+function autowireControllerMethods(controllerInstance, scope) {
+  for (var attrName in controllerInstance) {
+    var attr = controllerInstance[attrName];
+    var scopeAnnotation = getAnnotation(attr, Scope);
+    if (scopeAnnotation) {
+      var scopeAttrName =
+        (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
 
-    for (var attrName in controller) {
-      var attr = controller[attrName];
-      var scopeAnnotation = getAnnotation(attr, Scope);
-      if (scope && scopeAnnotation) {
-        var scopeAttrName =
-          (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
-
-        if (typeof attr === 'function') {
-          scope[scopeAttrName] = angular.bind(controller, attr);
-        } else {
-          scope[scopeAttrName] = attr;
-        }
+      if (typeof attr === 'function') {
+        scope[scopeAttrName] = angular.bind(controllerInstance, attr);
+      } else {
+        scope[scopeAttrName] = attr;
       }
     }
+  }
+}
 
-    return controller;
-  }));
+function decorateControllerService($controller) {
+  return function decoratedControllerService(constructor, locals) {
+    var instance = $controller(constructor, locals);
+
+    if (locals.$scope) {
+      autowireControllerMethods(instance, locals.$scope);
+    }
+
+    return instance;
+  };
+}
+
+function decorateModuleServices(module) {
+  module.config(['$provide', function getProvide($provide) {
+    $provide.decorator('$controller', ['$delegate', decorateControllerService]);
+  }]);
 }
 
 export class Module {
   constructor(module) {
+    decorateModuleServices(module);
     this.module = module;
   }
 
@@ -50,7 +61,8 @@ export class Module {
     var dependencies = listDependencies(obj);
 
     if (ctrlAnotation) {
-      registerController(this.module, ctrlAnotation.controllerName, dependencies, obj);
+      obj.$inject = dependencies;
+      this.module.controller(ctrlAnotation.controllerName, obj);
     }
   }
 

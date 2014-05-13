@@ -16,18 +16,22 @@ class Scope {
   }
 }
 
-function getAnnotation(obj, clazz) {
-  var annotations = getAnnotations(obj, clazz);
+function getAnnotation(fn, annotationClass) {
+  if (!fn || typeof fn !== 'function' || !fn.annotations) {
+    return null;
+  }
+
+  var annotations = getAnnotations(fn, annotationClass);
   return (annotations.length > 0) ? annotations[0] : null;
 }
 
-function getAnnotations(obj, clazz) {
-  if (!obj.annotations) {
+function getAnnotations(fn, annotationClass) {
+  if (!fn || typeof fn !== 'function' || !fn.annotations) {
     return [];
   }
 
-  return obj.annotations.filter( (annotation) =>
-    annotation instanceof clazz
+  return fn.annotations.filter( (annotation) =>
+    annotation instanceof annotationClass
   );
 }
 
