@@ -16,5 +16,29 @@
     </ul>
   </div>
 
-  <script data-main="main.js" src="lib/requirejs/require.js"></script>
+  <script src="lib/traceur-runtime.js"></script>
+  <script src="lib/es6-module-loader.js"></script>
+  <script src="lib/system.js"></script>
+  <script>
+    System.map['diWrap'] = 'diWrapper/index';
+    System.config({
+      baseURL: '/',
+      paths: {
+        'angular': 'lib/angular.js'
+      }
+    });
+    Promise.all([
+      System.import('angular'),
+      System.import('noteurangle')
+    ]).then(function (r) {
+        angular = r[0];
+        angular.element(document).ready(function () {
+          angular.bootstrap(document, ['noteurangle']);
+        });
+    }).catch(function (e) {
+      setTimeout(function() {
+        throw e;
+      });
+    });
+  </script>
 </body>

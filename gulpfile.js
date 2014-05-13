@@ -3,6 +3,7 @@ var traceur = require('gulp-traceur');
 var bower = require('gulp-bower-files');
 var connect = require('gulp-connect');
 var clean = require('gulp-clean');
+var flatten = require('gulp-flatten');
 
 var paths = {
   es6Scripts: ['src/**/*.js', '!src/main.js'],
@@ -26,7 +27,7 @@ gulp.task('copy', function () {
 
 gulp.task('es6', function() {
   return gulp.src(paths.es6Scripts).pipe(traceur({
-    sourceMap: true,
+    sourceMap: false,
     annotations: true,
     modules: 'amd'
   })).pipe(gulp.dest(paths.build)).
@@ -34,7 +35,9 @@ gulp.task('es6', function() {
 });
 
 gulp.task('bower', function () {
-  return bower().pipe(gulp.dest(paths.build + '/lib'));
+  return bower().
+    pipe(flatten()).
+    pipe(gulp.dest(paths.build + '/lib'));
 });
 
 gulp.task('clean', function () {

@@ -17,7 +17,17 @@
   ],
   "dependencies": {
     "angular": "~1.2.16",
-    "requirejs": "~2.1.11",
-    "traceur-runtime": "~0.0.41"
+    "traceur-runtime": "~0.0.41",
+    "system.js": "~0.6.0",
+    "es6-shim": "~0.10.1",
+    "es6-module-loader": "~0.6.0"
+  },
+  "overrides": {
+    "system.js": {
+      "main": "dist/system.js"
+    },
+    "es6-module-loader": {
+      "main": "dist/es6-module-loader.js"
+    }
   }
 }
