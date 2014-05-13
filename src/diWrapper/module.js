@@ -19,16 +19,12 @@ function autowireControllerMethods(controllerInstance, scope) {
   for (var attrName in controllerInstance) {
     var attr = controllerInstance[attrName];
     var scopeAnnotation = getAnnotation(attr, Scope);
-    if (scopeAnnotation) {
-      var scopeAttrName =
-        (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
 
-      if (typeof attr === 'function') {
-        scope[scopeAttrName] = angular.bind(controllerInstance, attr);
-      } else {
-        scope[scopeAttrName] = attr;
-      }
+    if (scopeAnnotation) {
+      var scopeAttrName = (scopeAnnotation.name) ? scopeAnnotation.name : attrName;
+      scope[scopeAttrName] = angular.bind(controllerInstance, attr);
     }
+
   }
 }
 
